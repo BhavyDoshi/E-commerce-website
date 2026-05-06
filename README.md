@@ -41,43 +41,12 @@ Studio Mart is a complete e-commerce solution featuring:
 ## 📁 Project Structure
 
 ```
-d:\ecommerce/
-├── user/                 # Customer frontend (Next.js, port 3000)
-│   ├── app/
-│   │   ├── login/       # User login & registration
-│   │   ├── register/    # Register redirects to login
-│   │   ├── dashboard/   # Product browsing
-│   │   ├── cart/        # Shopping cart management
-│   │   ├── checkout/    # Checkout panel
-│   │   ├── orders/      # Order history with latest order
-│   │   ├── auth/        # Auth page (legacy)
-│   │   └── ...
-│   ├── components/      # Navbar, ProductCard, AddToCartButton, etc.
-│   ├── context/         # Auth & Cart context
-│   └── lib/             # API calls & mock data
-│
+ecommerce/
 ├── admin/               # Admin panel (Next.js, port 3001)
-│   ├── app/
-│   │   ├── login/       # Admin login & registration (separate)
-│   │   ├── dashboard/   # Admin overview
-│   │   ├── products/    # Product management
-│   │   ├── products/new # Create new product
-│   │   ├── customers/   # Customer list
-│   │   ├── orders/      # Order management
-│   │   └── ...
-│   ├── components/      # AdminNav, StatCard, etc.
-│   ├── context/         # Auth context
-│   └── lib/             # API calls & mock data
-│
-└── backend/             # Express API (Node.js, port 4000)
-    ├── server.js        # Main server file
-    ├── config/
-    │   └── db.js        # MongoDB connection
-    ├── models/          # User, Product, Order schemas
-    ├── routes/          # API endpoints
-    ├── controllers/     # Route handlers
-    ├── middleware/      # Auth & admin middleware
-    └── ...
+├── backend/             # Express API (Node.js)
+├── user/                # Customer storefront (Next.js, port 3000)
+├── package.json         # Root workspace config
+└── README.md            # Project overview
 ```
 
 ## 🚀 Getting Started
@@ -126,7 +95,7 @@ d:\ecommerce/
 
 ### Running the Application
 
-**From the root directory, run all services:**
+**From the root directory, run each service in a separate terminal:**
 ```bash
 npm run dev:backend
 npm run dev:user
