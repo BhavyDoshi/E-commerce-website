@@ -69,6 +69,11 @@ ecommerce/
    npm install
    ```
 
+   Or install everything across the workspaces:
+   ```bash
+   npm run install:all
+   ```
+
 3. **Configure environment variables**
 
    **Backend** - Create `backend/.env`:
@@ -100,6 +105,11 @@ ecommerce/
 npm run dev:backend
 npm run dev:user
 npm run dev:admin
+```
+
+If you want the root command to launch the full workspace sequence, use:
+```bash
+npm run dev
 ```
 
 Or start each individually:
