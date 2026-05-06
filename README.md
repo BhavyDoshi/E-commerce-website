@@ -33,7 +33,7 @@ Studio Mart is a complete e-commerce solution featuring:
 
 - **Separate Authentication**: Independent login pages for users and admins - no shared auth screens
 - **Smart Checkout**: Checkout only accessible from cart page as a panel, not a navigation item
-- **Order Management**: Latest orders displayed in Orders tab (not Notifications)
+- **Order Management**: Latest orders displayed in Orders tab
 - **JWT Auth**: Secure token-based authentication with role-based access control
 - **Demo Mode**: Works with fallback data when database is offline
 - **Responsive Design**: Tailwind CSS for modern, mobile-friendly UI
