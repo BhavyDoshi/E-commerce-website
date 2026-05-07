@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useAuth } from '@/context/auth-context';
 
-export default function UserLoginPage() {
+export default function AdminRegisterPage() {
   const router = useRouter();
-  const { login, logout } = useAuth();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const { register, logout } = useAuth();
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -18,17 +18,17 @@ export default function UserLoginPage() {
     setError('');
 
     try {
-      const result = await login(form);
+      const result = await register({ ...form, role: 'admin' });
 
-      if (result.user.role === 'admin') {
+      if (result.user.role !== 'admin') {
         logout();
-        setError('Use the admin panel for admin access.');
+        setError('Invalid admin registration.');
         return;
       }
 
       router.push('/dashboard');
     } catch (error) {
-      setError('Unable to log in. Please try again.');
+      setError('Admin registration failed. Please check your details.');
     } finally {
       setLoading(false);
     }
@@ -38,11 +38,23 @@ export default function UserLoginPage() {
     <div className="mx-auto flex min-h-[calc(100vh-88px)] max-w-3xl items-center justify-center px-4 py-16">
       <div className="w-full max-w-md rounded-[36px] border border-black/5 bg-white/90 p-8 shadow-[0_30px_90px_rgba(17,24,39,0.08)]">
         <div className="mb-6 text-center">
-          <h1 className="text-4xl font-semibold tracking-tight text-ink">User Login</h1>
-          <p className="mt-2 text-sm text-ink/60">Sign in with your email and password.</p>
+          <h1 className="text-4xl font-semibold tracking-tight text-ink">Admin Register</h1>
+          <p className="mt-2 text-sm text-ink/60">Create an admin account for the dashboard.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-ink mb-1">Name</label>
+            <input
+              type="text"
+              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className="w-full rounded-lg border border-black/10 bg-white px-4 py-2 text-ink placeholder-ink/40 focus:border-accent focus:outline-none"
+              placeholder="Your name"
+            />
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-ink mb-1">Email</label>
             <input
@@ -51,7 +63,7 @@ export default function UserLoginPage() {
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               className="w-full rounded-lg border border-black/10 bg-white px-4 py-2 text-ink placeholder-ink/40 focus:border-accent focus:outline-none"
-              placeholder="your@email.com"
+              placeholder="admin@email.com"
             />
           </div>
 
@@ -74,14 +86,14 @@ export default function UserLoginPage() {
             disabled={loading}
             className="w-full rounded-lg bg-accent px-4 py-2 font-semibold text-white transition hover:bg-accent/90 disabled:opacity-50"
           >
-            {loading ? 'Signing in...' : 'Login'}
+            {loading ? 'Creating admin account...' : 'Register'}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-ink/60">
-          New user?{' '}
-          <Link href="/register" className="font-semibold text-accent hover:opacity-90">
-            Create an account
+          Already have an admin account?{' '}
+          <Link href="/login" className="font-semibold text-accent hover:opacity-90">
+            Go to login
           </Link>
         </p>
       </div>

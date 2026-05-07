@@ -80,9 +80,11 @@ ecommerce/
    ```env
    PORT=4000
    CLIENT_URL=http://localhost:3000
-   MONGODB_URI=your_mongodb_connection_string
+   MONGODB_URI=mongodb://127.0.0.1:27017/ecommerce
    JWT_SECRET=your_jwt_secret_key
    ```
+
+   If you use MongoDB Atlas or another hosted database, replace that `MONGODB_URI` with your own connection string.
 
    **Frontend** (optional) - Add to `user/.env.local` or `admin/.env.local`:
    ```env

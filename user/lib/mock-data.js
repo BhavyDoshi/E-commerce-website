@@ -41,20 +41,6 @@ export const mockProducts = [
     featured: false,
     rating: 4.6,
   },
-  {
-    _id: 'demo-4',
-    name: 'Canvas Weekender Bag',
-    slug: 'canvas-weekender-bag',
-    description: 'Everyday travel bag with a clean structured shape.',
-    price: 64,
-    category: 'Accessories',
-    stock: 12,
-    images: ['https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=900&q=80'],
-    sizes: ['One Size'],
-    colors: ['Tan', 'Stone'],
-    featured: false,
-    rating: 4.5,
-  },
 ];
 
 export const mockOrders = [

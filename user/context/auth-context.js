@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { loginUser, registerUser } from '@/lib/api';
 
 const AuthContext = createContext(null);
-const STORAGE_KEY = 'ecommerce-session';
+const STORAGE_KEY = 'ecommerce-user-session';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -14,9 +14,17 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      const parsed = JSON.parse(stored);
-      setUser(parsed.user);
-      setToken(parsed.token);
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed?.user?.role === 'admin') {
+          window.localStorage.removeItem(STORAGE_KEY);
+        } else {
+          setUser(parsed.user);
+          setToken(parsed.token);
+        }
+      } catch (error) {
+        window.localStorage.removeItem(STORAGE_KEY);
+      }
     }
     setReady(true);
   }, []);

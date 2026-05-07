@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 import { connectDB } from './config/db.js';
 import User from './models/User.js';
@@ -17,7 +18,11 @@ const app = express();
 const port = process.env.PORT || 4000;
 const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
 
-app.use(cors({ origin: clientUrl, credentials: true }));
+// Allow both user (3000) and admin (3001) frontends
+app.use(cors({ 
+  origin: [clientUrl, 'http://localhost:3000', 'http://localhost:3001'], 
+  credentials: true 
+}));
 app.use(express.json());
 
 const fallbackProducts = [
@@ -65,6 +70,23 @@ const fallbackProducts = [
   },
 ];
 
+const fallbackUsers = [
+  {
+    _id: 'user-1',
+    name: 'Demo User',
+    email: 'demo@example.com',
+    password: bcrypt.hashSync('password123', 10),
+    role: 'user',
+  },
+  {
+    _id: 'admin-1',
+    name: 'Admin User',
+    email: 'admin@example.com',
+    password: bcrypt.hashSync('password123', 10),
+    role: 'admin',
+  },
+];
+
 function createToken(user) {
   return jwt.sign({ id: user._id, role: user.role, email: user.email }, process.env.JWT_SECRET || 'dev-secret', {
     expiresIn: '7d',
@@ -80,6 +102,47 @@ function toPublicUser(user) {
   };
 }
 
+function isDatabaseReady() {
+  return mongoose.connection.readyState === 1;
+}
+
+async function seedDefaultUsers() {
+  if (!isDatabaseReady()) {
+    return;
+  }
+
+  const defaults = [
+    {
+      name: 'Demo User',
+      email: 'demo@example.com',
+      password: 'password123',
+      role: 'user',
+    },
+    {
+      name: 'Admin User',
+      email: 'admin@example.com',
+      password: 'password123',
+      role: 'admin',
+    },
+  ];
+
+  for (const defaultUser of defaults) {
+    const existing = await User.findOne({ email: defaultUser.email });
+
+    if (!existing) {
+      const hashedPassword = await bcrypt.hash(defaultUser.password, 10);
+      await User.create({
+        name: defaultUser.name,
+        email: defaultUser.email,
+        password: hashedPassword,
+        role: defaultUser.role,
+      });
+    }
+  }
+
+  console.log('Default login accounts are ready');
+}
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
@@ -89,6 +152,41 @@ app.post('/api/auth/register', async (req, res) => {
 
   if (!name || !email || !password) {
     return res.status(400).json({ message: 'Name, email, and password are required' });
+  }
+
+  if (!isDatabaseReady()) {
+    const existing = fallbackUsers.find((item) => item.email === email);
+
+    if (existing) {
+      if (role === 'admin') {
+        existing.name = name;
+        existing.password = bcrypt.hashSync(password, 10);
+        existing.role = 'admin';
+
+        return res.status(200).json({
+          user: toPublicUser(existing),
+          token: createToken(existing),
+        });
+      }
+
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    const userRole = role === 'admin' ? 'admin' : 'user';
+    const user = {
+      _id: `offline-${Date.now()}`,
+      name,
+      email,
+      password: bcrypt.hashSync(password, 10),
+      role: userRole,
+    };
+
+    fallbackUsers.push(user);
+
+    return res.status(201).json({
+      user: toPublicUser(user),
+      token: createToken(user),
+    });
   }
 
   const existing = await User.findOne({ email });
@@ -120,6 +218,25 @@ app.post('/api/auth/register', async (req, res) => {
 
 app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
+
+  if (!isDatabaseReady()) {
+    const user = fallbackUsers.find((item) => item.email === email);
+
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    return res.json({
+      user: toPublicUser(user),
+      token: createToken(user),
+    });
+  }
+
   const user = await User.findOne({ email });
 
   if (!user) {
@@ -235,6 +352,13 @@ async function start() {
     await connectDB();
   } catch (error) {
     console.warn('Database connection failed. Starting in API-only demo mode.');
+  }
+
+  // Seed users - but don't let it crash the server if it times out
+  try {
+    await seedDefaultUsers();
+  } catch (error) {
+    console.warn('Failed to seed default users:', error.message);
   }
 
   app.listen(port, () => {

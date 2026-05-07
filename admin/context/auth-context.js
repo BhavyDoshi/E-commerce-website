@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { loginUser, registerUser } from '@/lib/api';
 
 const AuthContext = createContext(null);
-const STORAGE_KEY = 'ecommerce-session';
+const STORAGE_KEY = 'ecommerce-admin-session';
 
 function loadAdminSession() {
   const stored = window.localStorage.getItem(STORAGE_KEY);
