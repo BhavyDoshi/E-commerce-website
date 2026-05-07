@@ -1,302 +1,279 @@
-# Studio Mart - E-Commerce MERN Application
+# Studio Studio Mart — E‑Commerce (MERN) Monorepo
 
-A modern full-stack e-commerce platform built with the MERN stack (MongoDB, Express, React, Node.js). This is a complete monorepo containing a customer storefront, admin control panel, and backend API with separate authentication flows.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Node.js CI](https://img.shields.io/badge/Node.js-%3E%3D16-brightgreen)](https://nodejs.org/)
+
+A modern full-stack e-commerce platform built with the MERN stack (MongoDB, Express, React, Node.js). This monorepo contains the customer storefront, an admin control panel, and the backend API with separate authentication and role-based access.
 
 ## 🎯 Overview
 
-Studio Mart is a complete e-commerce solution featuring:
+Studio Mart includes the user storefront, an admin dashboard for product and order management, and a REST API backend. It supports local development and a demo fallback mode when MongoDB is unavailable.
 
-### 👥 **User/Customer Side**
-- Independent user login and registration at `/login`
-- Browse and search products on dashboard
+## Table of Contents
+
+- [Features](#✨-key-features)
+- [Tech Stack](#💻-tech-stack)
+- [Quick Start](#🚀-getting-started)
+- [Scripts](#scripts)
+- [Project Structure](#📁-project-structure)
+- [API Endpoints](#🔌-api-endpoints)
+- [Contributing](#🤝-contributing)
+- [License](#📄-license)
+
+### 👥 User (Customer)
+
+- Independent user login and registration (`/login`) in the user app
+- Browse and search products
 - Add items to cart and manage quantities
-- Checkout panel that appears after cart confirmation
-- Order history with latest order prominently displayed
-- User-only account management
+- Checkout panel accessible from the cart
+- Order history with latest order highlighted
 
-### 🛠️ **Admin Panel**
-- Independent admin login and registration at `/login`
-- Complete product management (create, read, update, delete)
-- Customer list and management
-- Order tracking and management
-- Admin dashboard with key metrics
-- Admin-only authorization
+### 🛠️ Admin Panel
 
-### ⚙️ **Backend API**
-- RESTful API for all operations
-- Role-based access control
-- JWT authentication with session management
-- MongoDB integration with Mongoose
-- Fallback demo data for offline mode
+- Independent admin login (`/login`) in the admin app
+- Full product CRUD (create/read/update/delete)
+- Customer list and order management
+- Dashboard with admin metrics and role-restricted routes
+
+### ⚙️ Backend API
+
+- RESTful API with JWT-based authentication
+- Role-based access control (admin vs customer)
+- MongoDB via Mongoose, with mock/demo fallback data for development
 
 ## ✨ Key Features
 
-- **Separate Authentication**: Independent login pages for users and admins - no shared auth screens
-- **Smart Checkout**: Checkout only accessible from cart page as a panel, not a navigation item
-- **Order Management**: Latest orders displayed in Orders tab
-- **JWT Auth**: Secure token-based authentication with role-based access control
-- **Demo Mode**: Works with fallback data when database is offline
-- **Responsive Design**: Tailwind CSS for modern, mobile-friendly UI
+- Separate user and admin authentication flows
+- Checkout panel available from the cart page
+- Order history and admin order management
+- JWT token authentication and RBAC
+- Demo fallback data for offline development
+- Responsive UI powered by Tailwind CSS
 
 ## 📁 Project Structure
 
-```
+```text
 ecommerce/
-├── admin/               # Admin panel (Next.js, port 3001)
+├── admin/               # Admin panel (Next.js, default port 3001)
 ├── backend/             # Express API (Node.js)
-├── user/                # Customer storefront (Next.js, port 3000)
-├── package.json         # Root workspace config
-└── README.md            # Project overview
+├── user/                # Customer storefront (Next.js, default port 3000)
+├── package.json         # Root workspace config and scripts
+└── README.md            # This file
 ```
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v16+)
-- npm or yarn
-- MongoDB (local or MongoDB Atlas)
 
-### Installation
+- Node.js v16 or later
+- npm (or yarn)
+- MongoDB (local or Atlas)
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd ecommerce
-   ```
+### Quick start
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-   Or install everything across the workspaces:
-   ```bash
-   npm run install:all
-   ```
-
-3. **Configure environment variables**
-
-   **Backend** - Create `backend/.env`:
-   ```env
-   PORT=4000
-   CLIENT_URL=http://localhost:3000
-   MONGODB_URI=mongodb://127.0.0.1:27017/ecommerce
-   JWT_SECRET=your_jwt_secret_key
-   ```
-
-   If you use MongoDB Atlas or another hosted database, replace that `MONGODB_URI` with your own connection string.
-
-   **Frontend** (optional) - Add to `user/.env.local` or `admin/.env.local`:
-   ```env
-   NEXT_PUBLIC_API_URL=http://localhost:4000/api
-   NEXT_PUBLIC_ADMIN_URL=http://localhost:3001
-   ```
-
-4. **Start MongoDB**
-   ```bash
-   # Local MongoDB
-   mongod
-
-   # Or use MongoDB Atlas connection string in .env
-   ```
-
-### Running the Application
-
-**From the root directory, run each service in a separate terminal:**
 ```bash
+git clone <repository-url>
+cd ecommerce
+npm install
+# start services (open separate terminals)
 npm run dev:backend
 npm run dev:user
 npm run dev:admin
 ```
 
-If you want the root command to launch the full workspace sequence, use:
+### Environment
+
+Create `backend/.env`:
+
+```env
+PORT=4000
+CLIENT_URL=http://localhost:3000
+MONGODB_URI=mongodb://127.0.0.1:27017/ecommerce
+JWT_SECRET=your_jwt_secret_key
+```
+
+Create `user/.env.local` and/or `admin/.env.local` (optional):
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4000/api
+NEXT_PUBLIC_ADMIN_URL=http://localhost:3001
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js v16 or later
+- npm (or yarn)
+- MongoDB (local or Atlas)
+
+### Installation
+
+1. Clone the repository
+
 ```bash
-npm run dev
+git clone <repository-url>
+cd ecommerce
+```
+
+1. Install dependencies (root or per workspace)
+
+```bash
+npm install
+# or (if workspaces script exists)
+npm run install:all
+```
+
+1. Configure environment variables
+
+Backend (`backend/.env`):
+
+```env
+PORT=4000
+CLIENT_URL=http://localhost:3000
+MONGODB_URI=mongodb://127.0.0.1:27017/ecommerce
+JWT_SECRET=your_jwt_secret_key
+```
+
+Frontend (optional) - create `user/.env.local` and/or `admin/.env.local`:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4000/api
+NEXT_PUBLIC_ADMIN_URL=http://localhost:3001
+```
+
+1. Start MongoDB (local) or ensure your Atlas connection string is in `MONGODB_URI`.
+
+```bash
+# start local MongoDB (platform dependent)
+mongod
+```
+
+### Running the App
+
+From the root folder, run each service in a separate terminal:
+
+```bash
+npm run dev:backend   # starts backend (default port 4000)
+npm run dev:user      # starts user frontend (default port 3000)
+npm run dev:admin     # starts admin frontend (default port 3001)
 ```
 
 Or start each individually:
+
 ```bash
-# Terminal 1 - Backend API
+# Backend
 cd backend && npm start
 
-# Terminal 2 - User Frontend
+# User frontend
 cd user && npm run dev
 
-# Terminal 3 - Admin Frontend
+# Admin frontend
 cd admin && npm run dev
 ```
 
-## 📍 Application Routes
+Open in browser after startup:
 
-### User App (http://localhost:3000)
+- User frontend: [http://localhost:3000](http://localhost:3000)
+- Admin frontend: [http://localhost:3001](http://localhost:3001)
+- Backend API: [http://localhost:4000](http://localhost:4000)
 
-| Route | Purpose |
-|-------|---------|
-| `/login` | **User-only** login & registration page |
-| `/register` | Redirects to `/login` |
-| `/dashboard` | Browse and view all products |
-| `/products/[id]` | View product details |
-| `/cart` | Shopping cart with checkout button |
-| `/checkout` | Checkout panel (accessible only from cart) |
-| `/orders` | Order history with latest order displayed |
+## 📍 Common Routes (defaults)
 
-### Admin App (http://localhost:3001)
+User App ([http://localhost:3000](http://localhost:3000))
 
-| Route | Purpose |
-|-------|---------|
-| `/login` | **Admin-only** login & registration page |
-| `/dashboard` | Admin overview with statistics |
-| `/products` | List all products |
-| `/products/new` | Create new product |
-| `/customers` | View registered customers |
-| `/orders` | View all customer orders |
+- `/login` — user login/register
+- `/dashboard` — product listings
+- `/products/[id]` — product details
+- `/cart` — shopping cart
+- `/checkout` — checkout panel (from cart)
+- `/orders` — user order history
+
+Admin App ([http://localhost:3001](http://localhost:3001))
+
+- `/login` — admin login
+- `/dashboard` — admin overview
+- `/products` — manage products
+- `/products/new` — create product
+- `/customers` — view customers
+- `/orders` — view/manage orders
 
 ## 🔐 Authentication
 
-### User Authentication
-- Register: Create new customer account
-- Login: Use email & password
-- Session: Stored in browser localStorage
-
-### Admin Authentication
-- Register: Create new admin account
-- Login: Use email & password (admin role required)
-- Role-Based: Admin routes protected by middleware
-
-### Security Features
-- JWT token-based authentication
-- Role-based access control (RBAC)
-- Protected API endpoints
-- Secure session management
-
-## 🛒 User Workflow
-
-1. **Browse**: Visit `/dashboard` to browse products
-2. **Shop**: Add items to cart from product listings
-3. **Review**: Go to `/cart` to review items and quantities
-4. **Checkout**: Click "Continue to checkout" button to open checkout panel
-5. **Order**: Fill shipping details and confirm order
-6. **Track**: View order in `/orders` - latest order shows at the top
-
-## 👨‍💼 Admin Workflow
-
-1. **Dashboard**: Overview with key metrics
-2. **Products**: Manage inventory (create, view, delete)
-3. **Customers**: See registered user accounts
-4. **Orders**: Track and manage customer orders
+Both user and admin flows use email/password sign-in with JWT tokens. Role-based middleware protects admin routes. Sessions and tokens are managed on the client and verified by the backend.
 
 ## 💻 Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | Next.js 14, React 18, Tailwind CSS |
-| **Backend** | Node.js, Express.js |
-| **Database** | MongoDB, Mongoose ODM |
-| **Authentication** | JWT (JSON Web Tokens) |
-| **Package Manager** | npm workspaces |
-| **Development** | Hot reload, Demo fallback data |
+- Frontend: Next.js 14, React 18, Tailwind CSS
+- Backend: Node.js, Express
+- Database: MongoDB with Mongoose
+- Auth: JWT (JSON Web Tokens)
+- Package manager: npm (workspaces)
 
-## 🔌 API Endpoints
+## Workflows
 
-### Authentication
-- `POST /api/auth/register` - Create new account
-- `POST /api/auth/login` - Authenticate user/admin
+User workflow: browse → add to cart → checkout → view orders.
 
-### Products (User)
-- `GET /api/products` - List all products
-- `GET /api/products/:id` - Get product details
+Admin workflow: manage products/customers/orders from the admin dashboard.
 
-### Products (Admin)
-- `POST /api/products` - Create product
-- `DELETE /api/products/:id` - Delete product
+## 🔌 API Endpoints (examples)
 
-### Orders
-- `POST /api/orders` - Create new order
-- `GET /api/orders/my-orders` - Get user's orders
-- `GET /api/orders` - Get all orders (admin)
+- `POST /api/auth/register` — register
+- `POST /api/auth/login` — login
+- `GET /api/products` — list products
+- `GET /api/products/:id` — product details
+- `POST /api/products` — create product (admin)
+- `POST /api/orders` — create order
+- `GET /api/orders/my-orders` — user orders
+- `GET /api/orders` — all orders (admin)
 
-### Admin Stats
-- `GET /api/admin/stats` - Dashboard statistics
-- `GET /api/admin/customers` - List all customers
+## Scripts
 
-## ⚙️ Features in Detail
+- `npm run dev` — start all workspaces (if configured)
+- `npm run dev:backend` — start backend API
+- `npm run dev:user` — start user frontend
+- `npm run dev:admin` — start admin frontend
 
-### Checkout System
-- **One-Step Panel**: Checkout is a modal/panel accessible only from the cart page
-- **Shipping Form**: Collects full name, address, and phone number
-- **Cash on Delivery**: Payment method (COD only)
-- **Order Confirmation**: Creates order and shows in Orders page
-- **Auto-Redirect**: After checkout, redirects to Orders page showing latest order
 
-### Order Management
-- **Latest Order Display**: Top of Orders page shows most recent order
-- **Order Status**: Displays order status and payment status
-- **Order History**: List of all previous orders with details
-- **Admin View**: Admins can view all customer orders
+## Features in detail
 
-### Product Management
-- **Image Support**: Products can have images
-- **Categories**: Products can be categorized
-- **Admin Control**: Only admins can create/delete products
-- **Real-time Updates**: Changes reflect immediately
+- Checkout: modal/panel from cart, shipping form, order confirmation
+- Orders: status, history, latest order highlighted
+- Product management: images, categories, admin CRUD
+- Demo mode: fallback mock data when DB is offline
 
-### Demo Mode
-- **Fallback Data**: When MongoDB is offline, uses mock data
-- **Full Functionality**: All features work with demo data
-- **Development Friendly**: Perfect for testing without database
+## Security & middleware
 
-## 🔒 Security & Middleware
+- JWT verification for protected endpoints
+- Admin middleware validates `admin` role for admin routes
+- Protected routes return 401/403 when unauthorized
 
-### Authentication Middleware
-- Verifies JWT tokens on protected routes
-- Validates user session
+## Error handling & demo credentials
 
-### Admin Middleware
-- Checks user role is 'admin'
-- Prevents unauthorized access to admin routes
-- Applied to all admin-only endpoints
+- Falls back to demo data if MongoDB is unavailable
+- Clear UI error messages and proper HTTP statuses for auth errors
 
-### Protected Routes
-- All API endpoints with sensitive data
-- Admin routes and pages
-- User-specific data (orders, cart)
+Demo sample accounts (development/demo mode):
 
-## 🐛 Error Handling
-
-- Graceful fallback to demo data if MongoDB unavailable
-- Clear error messages in UI
-- Invalid credentials properly rejected
-- Protected routes return 401/403 errors
-
-## 📝 Sample Credentials (Demo Mode)
-
-```
-User Account:
-Email: user@example.com
-Password: password123
-Role: customer
-
-Admin Account:
-Email: admin@example.com
-Password: password123
-Role: admin
+```text
+User:  user@example.com / password123
+Admin: admin@example.com / password123
 ```
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Create a feature branch (`git checkout -b feature/Name`)
+1. Commit your changes and push
+1. Open a pull request
 
-## 📄 License
+## License
 
-This project is open source and available under the MIT License.
+MIT
 
-## 📞 Support
+## Support
 
-For issues, questions, or suggestions, please open an issue on GitHub or contact the development team.
+Open an issue on the repository for bugs or feature requests.
 
 ---
 
